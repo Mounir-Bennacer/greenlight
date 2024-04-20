@@ -25,4 +25,5 @@ go.work
 
 # Changelog
 .chglog
+cmd/api/tmp
 tmp
