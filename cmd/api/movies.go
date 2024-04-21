@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"greenlight.mounirbennacer.com/internal/data"
+	"greenlight.mounirbennacer.com/internal/validator"
 )
 
 func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,6 +20,20 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 	err := app.readJSON(w, r, &input)
 	if err != nil {
 		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	movie := &data.Movie{
+		Title:   input.Title,
+		Year:    input.Year,
+		Runtime: input.Runtime,
+		Genres:  input.Genres,
+	}
+
+	v := validator.New()
+
+	if data.ValidateMovie(v, movie); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
 
@@ -36,7 +51,7 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 		ID:      id,
 		Title:   "Casablanca",
 		Runtime: 102,
-		Genre: []string{
+		Genres: []string{
 			"Drama",
 			"Romance",
 			"War",
