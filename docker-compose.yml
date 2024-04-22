@@ -1,17 +1,28 @@
 version: "3.9"
+
+networks:
+  default:
+    name: ${NETWORK}
+
+volumes:
+  data_volume:
+  pgadmin:
+
 services:
   postgres:
-    container_name: ${APP_NAME}_database_container
+    container_name: postgres
     image: postgres:15-alpine
     env_file: .env
     ports:
       - "${PG_PORT}:5432"
     volumes:
       - data_volume:/var/lib/postgresql/data
+    networks:
+      - default
   # redis:
   #   image: redis:7-alpine
   pgadmin:
-    container_name: ${APP_NAME}_pgadmin_container
+    container_name: pgadmin
     image: dpage/pgadmin4
     env_file: .env
     environment:
@@ -22,13 +33,6 @@ services:
       - pgadmin:/var/lib/pgadmin
     ports:
       - "${PGADMIN_PORT:-5050}:80"
-    # networks:
-    #   - ${APP_NAME}-network
+    networks:
+      - default
     restart: unless-stopped
-
-volumes:
-  data_volume:
-  pgadmin:
-
-networks:
-  ${APP_NAME}-network:
