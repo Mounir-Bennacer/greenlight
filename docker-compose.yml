@@ -9,6 +9,16 @@ volumes:
   pgadmin:
 
 services:
+  api:
+    build: .
+    container_name: api
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+    command: air ./cmd/api/main.go -b 0.0.0.0
   postgres:
     container_name: postgres
     image: postgres:15-alpine
@@ -17,6 +27,7 @@ services:
       - "${PG_PORT}:5432"
     volumes:
       - data_volume:/var/lib/postgresql/data
+      - ./scripts/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     networks:
       - default
   # redis:
