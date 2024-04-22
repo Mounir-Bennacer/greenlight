@@ -2,13 +2,15 @@ package main
 
 import (
 	"net/http"
+
+	"greenlight.mounirbennacer.com/config"
 )
 
 func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
 	env := envelope{
 		"status": "available",
 		"system_info": map[string]string{
-			"environment": app.config.env,
+			"environment": config.Envs.Env,
 			"version":     version,
 		},
 	}

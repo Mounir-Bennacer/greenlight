@@ -8,40 +8,37 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	_ "github.com/lib/pq"
+	"greenlight.mounirbennacer.com/config"
 )
 
 // version is set at compile time
 const version = "1.0.0"
 
-type config struct {
-	port int
-	env  string
-	db   struct {
-		dsn string
-	}
-}
-
 type application struct {
-	config config
 	logger *slog.Logger
+	config config.Config
 }
 
 func main() {
-	var cfg config
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
-	flag.IntVar(&cfg.port, "port", 4000, "API server port")
-	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
-
-	flag.StringVar(&cfg.db.dsn, "db-dsn", "postgresql://greenlight:pa55word@postgres:5432/greenlight?sslmode=disable", "Postgresql DSN")
+	flag.StringVar(&config.Envs.Port, "port", config.Envs.Port, "API server port")
+	flag.StringVar(&config.Envs.Env, "env", config.Envs.Env, "Environment (development|staging|production)")
+	flag.StringVar(&config.Envs.Host, "db-dsn", config.Envs.Host, "Postgresql DSN")
 
 	flag.Parse()
 
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	port, err := strconv.Atoi(config.Envs.Port)
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
 
-	db, err := openDB(cfg)
+	db, err := openDB(config.Envs)
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
@@ -52,12 +49,12 @@ func main() {
 	logger.Info("database connection pool established")
 
 	app := &application{
-		config: cfg,
+		config: config.Envs,
 		logger: logger,
 	}
 
 	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.port),
+		Addr:         fmt.Sprintf(":%d", port),
 		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
@@ -65,15 +62,15 @@ func main() {
 		ErrorLog:     slog.NewLogLogger(logger.Handler(), slog.LevelError),
 	}
 
-	logger.Info("starting server", "addr", srv.Addr, "env", cfg.env)
+	logger.Info("starting server", "addr", srv.Addr, "env", config.Envs.Env)
 
 	err = srv.ListenAndServe()
 	logger.Error(err.Error())
 	os.Exit(1)
 }
 
-func openDB(cfg config) (*sql.DB, error) {
-	db, err := sql.Open("postgres", cfg.db.dsn)
+func openDB(cfg config.Config) (*sql.DB, error) {
+	db, err := sql.Open("postgres", cfg.Host)
 	if err != nil {
 		return nil, err
 	}
