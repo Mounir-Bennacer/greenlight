@@ -48,3 +48,12 @@ services:
     networks:
       - default
     restart: unless-stopped
+
+  integration:
+    build:
+      context: .
+      dockerfile: integration-test/Dockerfile
+    container_name: integration
+    image: integration
+    depends_on:
+      - api
