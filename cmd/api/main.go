@@ -30,6 +30,10 @@ func main() {
 	flag.StringVar(&config.Envs.Env, "env", config.Envs.Env, "Environment (development|staging|production)")
 	flag.StringVar(&config.Envs.Host, "db-dsn", config.Envs.Host, "Postgresql DSN")
 
+	flag.IntVar(&config.Envs.MaxOpenConns, "db-max-open-conns", config.Envs.MaxOpenConns, "PostgreSQL max open connections")
+	flag.IntVar(&config.Envs.MaxIdleConns, "db-max-idle-conns", config.Envs.MaxIdleConns, "PostgreSQL max idle connections")
+	flag.DurationVar(&config.Envs.MaxIdleTime, "db-max-idle-time", config.Envs.MaxIdleTime*time.Minute, "PostgreSQL max connection idle time")
+
 	flag.Parse()
 
 	port, err := strconv.Atoi(config.Envs.Port)
@@ -74,6 +78,10 @@ func openDB(cfg config.Config) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	db.SetMaxOpenConns(cfg.MaxOpenConns)
+	db.SetMaxIdleConns(cfg.MaxIdleConns)
+	db.SetConnMaxIdleTime(cfg.MaxIdleTime)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
