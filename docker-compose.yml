@@ -12,8 +12,6 @@ services:
   api:
     build: .
     container_name: api
-    env_file:
-      - .env
     ports:
       - "8000:8000"
     volumes:
@@ -35,8 +33,8 @@ services:
       - default
   # redis:
   #   image: redis:7-alpine
-  pgadmin:
-    container_name: pgadmin
+  pgadmin_dev:
+    container_name: pgadmin_dev
     image: dpage/pgadmin4
     env_file: .env
     environment:
