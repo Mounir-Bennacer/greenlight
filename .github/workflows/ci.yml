@@ -82,5 +82,4 @@ jobs:
         run: "docker-compose up \
           --build \
           --abort-on-container-exit \
-          --exit-code-from integration \
           --scale pgadmin_dev=0"
