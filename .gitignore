@@ -27,3 +27,4 @@ go.work
 .chglog
 cmd/api/tmp
 tmp
+coverage.txt
