@@ -36,7 +36,7 @@ services:
   pgadmin_dev:
     container_name: pgadmin_dev
     image: dpage/pgadmin4
-    env_file: .env
+    # env_file: .env
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}

@@ -76,6 +76,9 @@ jobs:
         run: bash <(curl -s https://codecov.io/bash)
 
       - name: Integration tests
+        env:
+          PGADMIN_DEFAULT_EMAIL: admin@greenlight.dz
+          PGADMIN_DEFAULT_PASSWORD: admin
         run: "docker-compose up \
           --build \
           --abort-on-container-exit \
