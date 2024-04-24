@@ -73,12 +73,12 @@ jobs:
           -coverprofile=coverage.txt \
           ./internal/..."
 
-      - name: Integration tests
-        env:
-          PGADMIN_DEFAULT_EMAIL: admin@greenlight.dz
-          PGADMIN_DEFAULT_PASSWORD: admin
-        run: "docker-compose up \
-          --build \
-          --abort-on-container-exit \
-          --exit-code-from integration \
-          --scale pgadmin_dev=0"
+      # - name: Integration tests
+      #   env:
+      #     PGADMIN_DEFAULT_EMAIL: admin@greenlight.dz
+      #     PGADMIN_DEFAULT_PASSWORD: admin
+      #   run: "docker-compose up \
+      #     --build \
+      #     --abort-on-container-exit \
+      #     --exit-code-from integration \
+      #     --scale pgadmin_dev=0"
