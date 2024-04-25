@@ -1,14 +1,23 @@
 version: "3.9"
 
+# ********************************
+# NETWORKS                       *
+# ********************************
 networks:
   default:
     name: greenlight-network
 
+# ********************************
+# VOLUMES                        *
+# ********************************
 volumes:
   data_volume:
   pgadmin:
 
 services:
+  # ********************************
+  # API                            *
+  # ********************************
   api:
     build: .
     container_name: api
@@ -17,6 +26,10 @@ services:
     volumes:
       - .:/usr/src/app
     command: air ./cmd/api/main.go -b 0.0.0.0
+
+  # ********************************
+  # POSTGRES                            *
+  # ********************************
   postgres:
     container_name: postgres
     image: postgres:15-alpine
@@ -31,12 +44,13 @@ services:
       - ./scripts/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     networks:
       - default
-  # redis:
-  #   image: redis:7-alpine
+
+  # ********************************
+  # PGADMIN_DEV                    *
+  # ********************************
   pgadmin_dev:
     container_name: pgadmin_dev
     image: dpage/pgadmin4
-    # env_file: .env
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
@@ -49,11 +63,34 @@ services:
       - default
     restart: unless-stopped
 
-  integration:
-    build:
-      context: .
-      dockerfile: integration-test/Dockerfile
-    container_name: integration
-    image: integration
-    depends_on:
-      - api
+  # ********************************
+  # MIGRATE                        *
+  # ********************************
+  migrate:
+    container_name: migrations
+    image: migrate/migrate
+    volumes:
+      - .:/migrations
+    command: ["-path", "/migrations", "-database", "${HOST}", "up", "3"]
+    networks:
+      - default
+    links:
+      - postgres
+
+  # ********************************
+  # INTEGRATION TESTS              *
+  # ********************************
+  # integration:
+  #   build:
+  #     context: .
+  #     dockerfile: integration-test/Dockerfile
+  #   container_name: integration
+  #   image: integration
+  #   depends_on:
+  #     - api
+
+  # ********************************
+  # REDIS                          *
+  # ********************************
+  # redis:
+  #   image: redis:7-alpine

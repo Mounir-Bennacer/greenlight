@@ -7,6 +7,7 @@
 *.dll
 *.so
 *.dylib
+bin/
 
 # Test binary, built with `go test -c`
 *.test
@@ -27,4 +28,6 @@ go.work
 .chglog
 cmd/api/tmp
 tmp
-coverage.txt
+
+# Dependency directories (remove the comment below to include it)
+vendor/
