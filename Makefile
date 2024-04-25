@@ -39,8 +39,12 @@ test: ### run test
 .PHONY: test
 
 migrate-up: ### migration up
-	$(DOCKER_CMD) run -v $(PATH):/migrations --network $(NETWORK) migrate/migrate -path=/migrations/ -database "$(HOST)" up
-.PHONY: migrate-up
+	$(DOCKER_CMD) run -v $(PATH):/migrations --network $(NETWORK) migrate/migrate -path=/migrations/ -database "$(HOST)" -verbose up
+I.PHONY: migrate-up
+
+migrate-down: ### migration down
+	$(DOCKER_CMD) run -v $(PATH):/migrations --network $(NETWORK) migrate/migrate -path=/migrations/ -database "$(HOST)" -verbose down
+.PHONY: migrate-down
 
 bin-deps:
 	GOBIN=$(LOCAL_BIN) go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
