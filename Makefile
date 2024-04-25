@@ -1,7 +1,6 @@
-#!/bin/zsh
 DOCKER_CMD := /opt/homebrew/bin/docker
 
-# SHELL := /bin/zsh
+SHELL := /bin/zsh
 
 include .env
 
@@ -28,7 +27,7 @@ linter-golangci: ### check by golangci linter
 .PHONY: linter-golangci
 
 linter-hadolint: ### check by hadolint linter
-	git ls-files --exclude='Dockerfile*' --ignored | xargs hadolint
+	git ls-files -oi --exclude='Dockerfile*' | xargs hadolint
 .PHONY: linter-hadolint
 
 linter-dotenv: ### check by dotenv linter
