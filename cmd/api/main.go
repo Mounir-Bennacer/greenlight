@@ -13,6 +13,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"greenlight.mounirbennacer.com/config"
+	"greenlight.mounirbennacer.com/internal/data"
 )
 
 // version is set at compile time
@@ -21,6 +22,7 @@ const version = "1.0.0"
 type application struct {
 	logger *slog.Logger
 	config config.Config
+	models data.Models
 }
 
 func main() {
@@ -55,6 +57,7 @@ func main() {
 	app := &application{
 		config: config.Envs,
 		logger: logger,
+		models: data.NewModels(db),
 	}
 
 	srv := &http.Server{
