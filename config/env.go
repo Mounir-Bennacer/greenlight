@@ -4,6 +4,8 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -18,6 +20,8 @@ type Config struct {
 var Envs = initConfig()
 
 func initConfig() Config {
+	godotenv.Load()
+
 	maxOpenConnsStr := getEnv("MAX_OPEN_CONN", "25")
 	maxOpenConns, _ := strconv.Atoi(maxOpenConnsStr)
 
@@ -30,7 +34,7 @@ func initConfig() Config {
 	return Config{
 		Port:         getEnv("API_PORT", "4000"),
 		Env:          getEnv("ENVIRONMENT", "development"),
-		Host:         getEnv("HOST", "postgresql://admin:admin@localhost:5432/greenlight?sslmode=disable"),
+		Host:         getEnv("HOST", "postgres://green:light@postgres:5432/greenlight?sslmode=disable"),
 		MaxOpenConns: maxOpenConns,
 		MaxIdleConns: maxIdleConns,
 		MaxIdleTime:  time.Duration(maxIdleTime),
