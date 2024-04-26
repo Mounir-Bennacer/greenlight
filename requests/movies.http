@@ -1,0 +1,37 @@
+### Check health
+GET http://localhost:8000/v1/healthcheck
+Content-Type: application/json
+
+### Create a new movie
+POST http://localhost:8000/v1/movies
+Content-Type: application/json
+{
+  "title": "The Breakfast Club",
+  "year": 1986,
+  "runtime": "96 mins",
+  "genres": [
+      "drama"
+  ]
+}
+
+### Get a movie by ID
+GET http://localhost:8000/v1/movies/4
+Content-Type: application/json
+
+### Update a movie by ID
+PUT http://localhost:8000/v1/movies/2
+Content-Type: application/json
+{
+        "title": "Black Panther 2",
+        "year": 2022,
+        "runtime": "145 mins",
+        "genres": [
+            "action",
+            "adventure",
+            "sci-fi"
+        ]
+}
+
+### Delete a movie by ID
+DELETE http://localhost:8000/v1/movies/2
+Content-Type: application/json
