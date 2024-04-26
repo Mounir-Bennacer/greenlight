@@ -26,9 +26,11 @@ services:
     volumes:
       - .:/usr/src/app
     command: air ./cmd/api/main.go -b 0.0.0.0
+    depends_on:
+      - postgres
 
   # ********************************
-  # POSTGRES                            *
+  # POSTGRES                       *
   # ********************************
   postgres:
     container_name: postgres
@@ -37,8 +39,25 @@ services:
       - POSTGRES_USER=${DB_USER:-admin}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
       - POSTGRES_DB=${DB_NAME:-greenlight}
+      - PGUSER=${DB_USER:-mounir}
     ports:
       - "5432:5432"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "psql",
+          "-h",
+          "localhost",
+          "-U",
+          "${DB_USER:-admin}",
+          "-c",
+          "select 1",
+          "postgres",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - data_volume:/var/lib/postgresql/data
       - ./scripts/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
@@ -62,19 +81,7 @@ services:
     networks:
       - default
     restart: unless-stopped
-
-  # ********************************
-  # MIGRATE                        *
-  # ********************************
-  migrate:
-    container_name: migrations
-    image: migrate/migrate
-    volumes:
-      - .:/migrations
-    command: ["-path", "/migrations", "-database", "${HOST}", "up", "3"]
-    networks:
-      - default
-    links:
+    depends_on:
       - postgres
 
   # ********************************
