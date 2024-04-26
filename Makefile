@@ -40,7 +40,7 @@ test: ### run test
 
 migrate-up: ### migration up
 	$(DOCKER_CMD) run -v $(PATH):/migrations --network $(NETWORK) migrate/migrate -path=/migrations/ -database "$(HOST)" -verbose up
-I.PHONY: migrate-up
+.PHONY: migrate-up
 
 migrate-down: ### migration down
 	$(DOCKER_CMD) run -v $(PATH):/migrations --network $(NETWORK) migrate/migrate -path=/migrations/ -database "$(HOST)" -verbose down
