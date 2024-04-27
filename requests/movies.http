@@ -19,19 +19,26 @@ GET http://localhost:8000/v1/movies/4
 Content-Type: application/json
 
 ### Update a movie by ID
-PUT http://localhost:8000/v1/movies/2
+PATCH http://localhost:8000/v1/movies/4
 Content-Type: application/json
 {
-        "title": "Black Panther 2",
-        "year": 2022,
-        "runtime": "145 mins",
+  "title": null,
+  "year": null
+}
+
+### Update a movie by ID
+PUT http://localhost:8000/v1/movies/3
+Content-Type: application/json
+{
+        "title": "Black Panther",
+        "year": 2021,
+        "runtime": "120 mins",
         "genres": [
             "action",
-            "adventure",
-            "sci-fi"
+            "adventure"
         ]
 }
 
 ### Delete a movie by ID
-DELETE http://localhost:8000/v1/movies/2
-Content-Type: application/json
+# DELETE http://localhost:8000/v1/movies/2
+# Content-Type: application/json
