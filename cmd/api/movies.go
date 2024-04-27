@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+  "errors"
 	"net/http"
 
 	"greenlight.mounirbennacer.com/internal/data"
@@ -132,7 +133,14 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 
 	err = app.models.Movies.Update(movie)
 	if err != nil {
-		app.notFoundResponse(w, r)
+    fmt.Println("err", err)
+    switch {
+    case errors.Is(err, data.ErrRecordNotFound):
+      app.editConflictResponse(w, r)
+    default:
+      app.serverErrorResponse(w, r, err)
+    }
+
 		return
 	}
 
