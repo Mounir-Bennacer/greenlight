@@ -1,4 +1,23 @@
 
+<a name="0.1.1"></a>
+## [0.1.1](https://github.com/Mounir-Bennacer/greenlight/compare/0.1.0...0.1.1)
+
+> 2024-04-27
+
+### Chore
+
+* removing .vscode folder
+
+### Docs
+
+* adding changelog
+
+### Feat
+
+* implementing data race prevention
+* updating the put request to patch to accept individual properties
+
+
 <a name="0.1.0"></a>
 ## [0.1.0](https://github.com/Mounir-Bennacer/greenlight/compare/0.0.2...0.1.0)
 
