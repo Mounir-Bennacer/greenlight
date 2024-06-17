@@ -1,8 +1,6 @@
 package main
 
 import (
-	"context"
-	"database/sql"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -13,6 +11,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"greenlight.mounirbennacer.com/config"
+	"greenlight.mounirbennacer.com/database"
 	"greenlight.mounirbennacer.com/internal/data"
 )
 
@@ -44,7 +43,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	db, err := openDB(config.Envs)
+	db, err := database.OpenDB(config.Envs)
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
@@ -74,26 +73,4 @@ func main() {
 	err = srv.ListenAndServe()
 	logger.Error(err.Error())
 	os.Exit(1)
-}
-
-func openDB(cfg config.Config) (*sql.DB, error) {
-	db, err := sql.Open("postgres", cfg.Host)
-	if err != nil {
-		return nil, err
-	}
-
-	db.SetMaxOpenConns(cfg.MaxOpenConns)
-	db.SetMaxIdleConns(cfg.MaxIdleConns)
-	db.SetConnMaxIdleTime(cfg.MaxIdleTime)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	err = db.PingContext(ctx)
-	if err != nil {
-		db.Close()
-		return nil, err
-	}
-
-	return db, nil
 }
